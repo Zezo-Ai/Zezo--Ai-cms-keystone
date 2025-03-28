@@ -1,5 +1,5 @@
 import NextHead from 'next/head'
-import React, { type FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 
 import { Button } from '@keystar/ui/button'
 import { Grid, HStack, VStack } from '@keystar/ui/layout'
@@ -53,6 +53,7 @@ function SigninPage({
   )
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
 
     try {

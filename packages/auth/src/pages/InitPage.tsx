@@ -1,5 +1,4 @@
 import NextHead from 'next/head'
-import React from 'react'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
@@ -20,18 +19,16 @@ function InitPage({
   authGqlNames,
   listKey,
   fieldPaths,
-  enableWelcome,
 }: {
   authGqlNames: AuthGqlNames
   listKey: string
   fieldPaths: string[]
-  enableWelcome: boolean
 }) {
   const router = useRouter()
   const redirect = useRedirect()
   const list = useList(listKey)
 
-  const builder = useBuildItem(list)
+  const builder = useBuildItem(list, fieldPaths)
   const {
     createInitialItem,
     CreateInitialInput,
@@ -49,12 +46,8 @@ function InitPage({
     }`)
 
   const onSubmit = async (e: React.FormEvent) => {
+    if (e.target !== e.currentTarget) return
     e.preventDefault()
-
-    // NOTE: React events bubble through portals, this prevents the
-    // parent form being submitted.
-    e.stopPropagation()
-
     const builtItem = await builder.build()
     if (!builtItem) return
 

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { type FormEvent, useId, useState, type ReactNode } from 'react'
+import { type FormEvent, useId, useState, type ReactNode } from 'react'
 
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -76,6 +76,7 @@ function FilterDialog({
   const [value, setValue] = useState(filter.value)
 
   const onSubmit = (event: FormEvent) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
 
     // TODO: Special "empty" types need to be documented somewhere. Filters that

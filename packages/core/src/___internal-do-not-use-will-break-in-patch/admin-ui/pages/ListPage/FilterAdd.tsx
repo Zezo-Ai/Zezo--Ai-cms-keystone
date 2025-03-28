@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
+import { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'
@@ -36,6 +36,7 @@ export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled
     }, 200)
   }
   const onSubmit = (event: FormEvent) => {
+    if (event.target !== event.currentTarget) return
     event.preventDefault()
     setForceValidation(true)
 

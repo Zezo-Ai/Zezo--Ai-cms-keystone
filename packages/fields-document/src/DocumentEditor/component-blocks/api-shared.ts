@@ -90,6 +90,7 @@ export type ChildField = {
         dividers?: 'inherit'
         links?: 'inherit'
         relationships?: 'inherit'
+        componentBlocks?: 'inherit'
       }
     | {
         kind: 'inline'
@@ -330,7 +331,7 @@ export type ValueForComponentSchema<Schema extends ComponentSchema> = Schema ext
             ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
             : never
 
-type Comp<Props> = (props: Props) => ReactElement | null
+type Comp<Props> = (props: Props) => ReactNode
 
 type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentSchema>> = {
   readonly [Key in keyof Props]: ValueForRenderingFromComponentPropField<Props[Key]>

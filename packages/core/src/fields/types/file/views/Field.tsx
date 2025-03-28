@@ -1,13 +1,15 @@
 import { useLocale } from '@react-aria/i18n'
 import bytes, { type BytesOptions } from 'bytes'
 import { extname } from 'path'
-import React, {
+import {
   type PropsWithChildren,
   type ReactElement,
   type SyntheticEvent,
   Fragment,
+  useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react'
 
 import { ActionButton } from '@keystar/ui/button'
@@ -162,16 +164,18 @@ function FileDetails(props: PropsWithChildren<FileData>) {
       gap="medium"
       padding="medium"
     >
-      <HStack
-        alignItems="center"
-        backgroundColor="surfaceTertiary"
-        borderRadius="small"
-        justifyContent="center"
-        height="100%"
-        UNSAFE_className={css({ aspectRatio: '1 / 1' })}
-      >
-        <Icon src={props.icon} size="medium" color="neutral" />
-      </HStack>
+      <a href={props.href} download={props.name}>
+        <HStack
+          alignItems="center"
+          backgroundColor="surfaceTertiary"
+          borderRadius="small"
+          justifyContent="center"
+          height="100%"
+          UNSAFE_className={css({ aspectRatio: '1 / 1' })}
+        >
+          <Icon src={props.icon} size="medium" color="neutral" />
+        </HStack>
+      </a>
       <VStack gap="medium" minWidth="alias.singleLineWidth" flex>
         <Text>
           <span className={css(trimStartStyles)} title={props.name}>
@@ -206,21 +210,34 @@ type FileData = {
   icon: ReactElement
   name: string
   size: number
+  href: string
 }
 
 function useFileData(value: FileValue): FileData | null {
+  const [objectUrl, setObjectUrl] = useState<string>('')
+  useEffect(() => {
+    if (value.kind === 'upload') {
+      const objectUrl = URL.createObjectURL(value.data.file)
+      setObjectUrl(objectUrl)
+      return () => {
+        URL.revokeObjectURL(objectUrl)
+      }
+    }
+  }, [value])
   switch (value.kind) {
     case 'from-server':
       return {
         icon: getFileIcon(value.data.filename),
         name: value.data.filename,
         size: value.data.filesize,
+        href: value.data.src,
       }
     case 'upload':
       return {
         icon: fileUpIcon,
         name: value.data.file.name,
         size: value.data.file.size,
+        href: objectUrl,
       }
     default:
       return null
